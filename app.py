@@ -181,95 +181,106 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-st.markdown(
-    """
-    <style>
-    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=Source+Serif+4:wght@600;700&display=swap');
-    :root {
-      --ink: #152019;
-      --muted: #5a665e;
-      --accent: #2f4a36;
-      --accent-soft: #e6efe8;
-      --line: #d5ddd7;
-      --panel: #f7faf8;
-    }
-    html, body, [class*="css"] {
-      font-family: "Noto Sans KR", "Malgun Gothic", sans-serif;
-      color: var(--ink);
-    }
-    .stApp {
-      background:
-        radial-gradient(1200px 500px at 10% -10%, #e8f0ea 0%, transparent 55%),
-        linear-gradient(180deg, #f4f7f5 0%, #eef3f0 100%);
-    }
-    .main .block-container { padding-top: 1.35rem; padding-bottom: 3.5rem; max-width: 1040px; }
-    h1 {
-      font-family: "Source Serif 4", "Noto Sans KR", serif !important;
-      font-weight: 700 !important;
-      letter-spacing: -0.03em !important;
-      color: var(--ink) !important;
-      font-size: 2.05rem !important;
-    }
-    .subtitle {
-      color: var(--muted);
-      margin-top: -0.35rem;
-      margin-bottom: 1.15rem;
-      font-size: 0.98rem;
-      letter-spacing: -0.01em;
-    }
-    section[data-testid="stSidebar"],
-    [data-testid="stSidebar"],
-    [data-testid="stSidebarContent"],
-    [data-testid="stSidebarUserContent"] {
-      background: #f4f7f5 !important;
-      color: #152019 !important;
-      border-right: 1px solid #d5ddd7;
-    }
-    [data-testid="stSidebar"] h1,
-    [data-testid="stSidebar"] h2,
-    [data-testid="stSidebar"] h3 {
-      color: #152019 !important;
-    }
-    .bulletin-banner {
-        background: linear-gradient(135deg, #f8fbf9 0%, var(--accent-soft) 100%);
-        border: 1px solid var(--line);
-        border-left: 4px solid var(--accent);
-        border-radius: 8px;
-        padding: 0.95rem 1.1rem;
-        margin: 0.35rem 0 1rem 0;
-        box-shadow: 0 1px 0 rgba(21,32,25,0.04);
-    }
-    div[data-testid="stDownloadButton"] button,
-    div[data-testid="stButton"] button[kind="primary"] {
-        background-color: var(--accent) !important;
-        color: #fff !important;
-        font-weight: 650 !important;
-        border: none !important;
-        border-radius: 8px !important;
-    }
-    div[data-testid="stButton"] button {
-        border-radius: 8px !important;
-        border-color: var(--line) !important;
-        color: #152019 !important;
-        background: #fff !important;
-    }
-    .order-step {
-        font-weight: 700;
-        color: var(--accent);
-        margin-top: 0.7rem;
-        padding: 0.35rem 0 0.15rem 0;
-        border-bottom: 1px solid var(--line);
-        letter-spacing: -0.01em;
-    }
-    div[data-testid="stVerticalBlockBorderWrapper"] {
-        background: var(--panel);
-        border: 1px solid var(--line) !important;
-        border-radius: 10px !important;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
+
+def _md(body: str) -> None:
+    """Markdown that always allows HTML (Streamlit escapes tags when False)."""
+    st.markdown(body, unsafe_allow_html=True)
+
+
+def _html(body: str) -> None:
+    """Render raw HTML/CSS. Prefer st.html (Streamlit 1.46+) so <style> is not shown as text."""
+    if hasattr(st, "html"):
+        st.html(body)
+    else:
+        st.markdown(body, unsafe_allow_html=True)
+
+
+_APP_CSS = """
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=Source+Serif+4:wght@600;700&display=swap');
+:root {
+  --ink: #152019;
+  --muted: #5a665e;
+  --accent: #2f4a36;
+  --accent-soft: #e6efe8;
+  --line: #d5ddd7;
+  --panel: #f7faf8;
+}
+html, body, [class*="css"] {
+  font-family: "Noto Sans KR", "Malgun Gothic", sans-serif;
+  color: var(--ink);
+}
+.stApp {
+  background:
+    radial-gradient(1200px 500px at 10% -10%, #e8f0ea 0%, transparent 55%),
+    linear-gradient(180deg, #f4f7f5 0%, #eef3f0 100%);
+}
+.main .block-container { padding-top: 1.35rem; padding-bottom: 3.5rem; max-width: 1040px; }
+h1 {
+  font-family: "Source Serif 4", "Noto Sans KR", serif !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.03em !important;
+  color: var(--ink) !important;
+  font-size: 2.05rem !important;
+}
+.subtitle {
+  color: var(--muted);
+  margin-top: -0.35rem;
+  margin-bottom: 1.15rem;
+  font-size: 0.98rem;
+  letter-spacing: -0.01em;
+}
+section[data-testid="stSidebar"],
+[data-testid="stSidebar"],
+[data-testid="stSidebarContent"],
+[data-testid="stSidebarUserContent"] {
+  background: #f4f7f5 !important;
+  color: #152019 !important;
+  border-right: 1px solid #d5ddd7;
+}
+[data-testid="stSidebar"] h1,
+[data-testid="stSidebar"] h2,
+[data-testid="stSidebar"] h3 {
+  color: #152019 !important;
+}
+.bulletin-banner {
+  background: linear-gradient(135deg, #f8fbf9 0%, var(--accent-soft) 100%);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--accent);
+  border-radius: 8px;
+  padding: 0.95rem 1.1rem;
+  margin: 0.35rem 0 1rem 0;
+  box-shadow: 0 1px 0 rgba(21,32,25,0.04);
+}
+div[data-testid="stDownloadButton"] button,
+div[data-testid="stButton"] button[kind="primary"] {
+  background-color: var(--accent) !important;
+  color: #fff !important;
+  font-weight: 650 !important;
+  border: none !important;
+  border-radius: 8px !important;
+}
+div[data-testid="stButton"] button {
+  border-radius: 8px !important;
+  border-color: var(--line) !important;
+  color: #152019 !important;
+  background: #fff !important;
+}
+.order-step {
+  font-weight: 700;
+  color: var(--accent);
+  margin-top: 0.7rem;
+  padding: 0.35rem 0 0.15rem 0;
+  border-bottom: 1px solid var(--line);
+  letter-spacing: -0.01em;
+}
+div[data-testid="stVerticalBlockBorderWrapper"] {
+  background: var(--panel);
+  border: 1px solid var(--line) !important;
+  border-radius: 10px !important;
+}
+</style>
+"""
 
 
 def _init_state():
@@ -733,7 +744,7 @@ def _render_device_share_panel() -> None:
     if not live or not Path(live).is_file():
         return
 
-    st.markdown("##### iPad · iPhone으로 자동 공유")
+    _md("##### iPad · iPhone으로 자동 공유")
     c1, c2 = st.columns([2, 1])
     with c1:
         if st.button("📱 iPad / iPhone 공유 시작", use_container_width=True, key="start_ios_share"):
@@ -898,7 +909,7 @@ def _on_memory_verse_change() -> None:
 
 def _hymn_inputs(label: str, num_key: str, title_key: str, fetch_key: str, allow_remote: bool):
     """Hymn number → auto title only (lyrics optional later / PDF checkbox)."""
-    st.markdown(f'<p class="order-step">{label}</p>', unsafe_allow_html=True)
+    _html(f'<p class="order-step">{label}</p>')
     st.session_state["_allow_remote"] = allow_remote
 
     # Sync before widgets (covers IME / missed on_change when number already changed)
@@ -987,6 +998,7 @@ def _hydrate_hymn_db() -> tuple[int, int, str]:
 
 
 def main():
+    _html(_APP_CSS)
     _init_state()
 
     n_show_idx, n_show_ly, catalog_error = _hydrate_hymn_db()
@@ -994,14 +1006,14 @@ def main():
 
     with st.sidebar:
         st.header("통합 흐름")
-        st.markdown(
+        _md(
             "1. **템플릿** — 다중 페이지 업로드/매핑  \n"
             "2. **자동 불러오기** — 찬송·교독·성경 번호  \n"
             "3. **일치 출력** — 주보 PDF + PPT + HTML"
         )
         st.divider()
         st.header("예배 순서")
-        st.markdown(
+        _md(
             "1. 예배 준비의 시간  \n2. 찬양과 기도  \n3. 사도신경  \n4. 교독문  \n"
             "5. 찬송가  \n6. 예배의 기도  \n7. 성가대 찬양  \n8. 오늘의 말씀  \n9. 생명의 말씀  \n"
             "10. 감사와 봉헌  \n11. 축도  \n12. 안내 및 광고"
@@ -1053,12 +1065,11 @@ def main():
 
     st.title("Worship PPT & PDF Generator")
     st.caption(f"빌드 {HYMN_DB_BUILD} · 로컬 찬송 {n_lyrics}/{n_index}")
-    st.markdown(
+    _html(
         '<p class="subtitle">'
         "① 다중 페이지 주보 업로드 → ② 번호만으로 찬송·교독·성경 자동 채움 → "
         "③ 주보 PDF · PPT · 예배화면 HTML을 <strong>한 번에</strong> 생성"
-        "</p>",
-        unsafe_allow_html=True,
+        "</p>"
     )
     if n_lyrics < 200:
         st.error(
@@ -1094,12 +1105,11 @@ def main():
     st.session_state["_allow_remote"] = allow_remote
 
     # ===== TOP: Custom bulletin upload & auto-template parser =====
-    st.markdown(
+    _html(
         '<div class="bulletin-banner">'
         "<strong>1단계 · 예배 순서 템플릿 자동 생성 (다중 페이지)</strong> — "
         "PDF·사진·텍스트를 올리면 페이지별로 분석하고, 입력칸·주보·PPT에 같은 내용으로 매핑합니다."
-        "</div>",
-        unsafe_allow_html=True,
+        "</div>"
     )
     st.subheader("예배 순서 템플릿 자동 생성 (다중 페이지)")
     st.caption(
@@ -1154,7 +1164,7 @@ def main():
 
     pages = st.session_state.get("bulletin_pages") or []
     if pages:
-        st.markdown("#### 페이지별 미리보기 · 섹션 매핑")
+        _md("#### 페이지별 미리보기 · 섹션 매핑")
         st.caption(
             "각 페이지가 인쇄 주보 PDF / PPT의 어느 구역으로 갈지 선택하세요. "
             "예: Page 1 → 표지·예배 순서, Page 2 → 말씀·교독·광고"
@@ -1220,7 +1230,7 @@ def main():
         with st.expander("추출된 원문 미리보기 (전체 페이지)", expanded=False):
             st.text(st.session_state.get("upload_raw_preview") or "(없음)")
 
-    st.markdown("---")
+    _md("---")
 
     # ===== Cover =====
     st.subheader("표지 · 기본 정보")
@@ -1256,15 +1266,14 @@ def main():
         "제목·본문이 자동으로 채워지며, 같은 내용으로 주보 PDF · PPT · HTML이 함께 만들어집니다."
     )
 
-    st.markdown("---")
+    _md("---")
 
     # ===== Order 1–11 =====
-    st.markdown(
+    _html(
         '<div class="bulletin-banner">'
         "<strong>2단계 · 예배 순서 입력 + 자동 불러오기</strong> — "
         "번호를 바꾸면 찬송·교독문·성경 본문을 자동으로 가져옵니다."
-        "</div>",
-        unsafe_allow_html=True,
+        "</div>"
     )
     st.subheader("예배 순서 입력 (1–11)")
 
@@ -1279,10 +1288,10 @@ def main():
 
     _hymn_inputs("2. 찬양과 기도 (Praise & Prayer)", "praise_num", "praise_title", "fetch_praise", allow_remote)
 
-    st.markdown('<p class="order-step">3. 사도신경</p>', unsafe_allow_html=True)
+    _html('<p class="order-step">3. 사도신경</p>')
     st.text_area("사도신경 전문", key="apostles_creed", height=150)
 
-    st.markdown('<p class="order-step">4. 교독문</p>', unsafe_allow_html=True)
+    _html('<p class="order-step">4. 교독문</p>')
     st.session_state["_allow_remote"] = allow_remote
 
     rc1, rc2, rc3 = st.columns([1.1, 2.6, 1.2])
@@ -1327,7 +1336,7 @@ def main():
 
     _hymn_inputs("5. 찬송가 (Hymn)", "hymn_num", "hymn_title", "fetch_hymn", allow_remote)
 
-    st.markdown('<p class="order-step">6. 예배의 기도</p>', unsafe_allow_html=True)
+    _html('<p class="order-step">6. 예배의 기도</p>')
     p1, p2 = st.columns([2.2, 1])
     with p1:
         st.text_area("기도문", key="prayer_text", height=110)
@@ -1336,7 +1345,7 @@ def main():
 
     _hymn_inputs("7. 성가대 찬양", "choir_anthem_num", "choir_anthem_title", "fetch_choir", allow_remote)
 
-    st.markdown('<p class="order-step">8. 오늘의 말씀</p>', unsafe_allow_html=True)
+    _html('<p class="order-step">8. 오늘의 말씀</p>')
     st.session_state["_allow_remote"] = allow_remote
 
     sc1, sc2 = st.columns([3, 1])
@@ -1363,7 +1372,7 @@ def main():
         st.caption("성경 구절을 입력(Enter)하면 교독문처럼 개역개정 본문이 자동으로 채워집니다. 예: 히브리서 4:1-11 또는 히 4:1-11")
     st.text_area("성경 본문", key="scripture_text_area", height=150)
 
-    st.markdown('<p class="order-step">금주의 암송구절</p>', unsafe_allow_html=True)
+    _html('<p class="order-step">금주의 암송구절</p>')
     mv1, mv2 = st.columns([3, 1])
     with mv1:
         st.text_input(
@@ -1394,7 +1403,7 @@ def main():
         placeholder="한 절 본문 (직접 입력도 가능)",
     )
 
-    st.markdown('<p class="order-step">9. 생명의 말씀</p>', unsafe_allow_html=True)
+    _html('<p class="order-step">9. 생명의 말씀</p>')
     s1, s2 = st.columns(2)
     with s1:
         st.text_input("설교 제목", key="sermon_title", placeholder="생명의 말씀 제목")
@@ -1403,20 +1412,19 @@ def main():
 
     _hymn_inputs("10. 감사와 봉헌 (Offering)", "offering_num", "offering_title", "fetch_offering", allow_remote)
 
-    st.markdown(
+    _html(
         '<div class="bulletin-banner" style="margin-top:0.5rem;">'
         "<strong>11–12 · 축도 · 안내 · 소식·광고</strong> — 주보·PPT·예배화면에 같이 들어갑니다."
-        "</div>",
-        unsafe_allow_html=True,
+        "</div>"
     )
-    st.markdown('<p class="order-step">11. 축도</p>', unsafe_allow_html=True)
+    _html('<p class="order-step">11. 축도</p>')
     b1, b2 = st.columns(2)
     with b1:
         st.text_input("축도", key="benediction", placeholder="예: 담임목사")
     with b2:
         st.text_input("안내", key="closing_note", placeholder="예: 다음에 또 만나요. 평안하세요.")
 
-    st.markdown('<p class="order-step">12. 안내 및 광고</p>', unsafe_allow_html=True)
+    _html('<p class="order-step">12. 안내 및 광고</p>')
     st.text_area(
         "소식 / 광고 본문 (한 줄에 하나씩)",
         key="announcements",
@@ -1426,13 +1434,12 @@ def main():
     )
 
     # ===== ONE shared WorshipData → bulletin PDF + PPT + HTML together =====
-    st.markdown("---")
-    st.markdown(
+    _md("---")
+    _html(
         '<div class="bulletin-banner">'
         "<strong>3단계 · 주보 PDF · PPT · 예배화면 일치 생성</strong> — "
         "위 입력(또는 업로드 템플릿)이 <strong>같은 WorshipData</strong>로 주보·슬라이드·HTML에 반영됩니다."
-        "</div>",
-        unsafe_allow_html=True,
+        "</div>"
     )
     st.subheader("주보 PDF · 예배 PPT · 예배화면 HTML")
     st.info(
@@ -1771,7 +1778,7 @@ def main():
 
     # —— PPT library: directly under download / open buttons ——
     ppt_library.ensure_dirs()
-    st.markdown("---")
+    _md("---")
     lib_open, lib_toggle = st.columns([1, 2])
     with lib_open:
         if st.button("📂 다른 PPT 자료 보관함 열기", use_container_width=True, key="ppt_lib_open_below"):
@@ -1829,12 +1836,12 @@ def main():
         if not stored:
             st.caption("아직 보관된 PPT가 없습니다. 위에서 파일을 올려 「자료 보관하기」를 누르세요.")
         else:
-            st.markdown(f"**보관 목록** · {len(stored)}개")
+            _md(f"**보관 목록** · {len(stored)}개")
             for cat_key, path in stored:
                 label = ppt_library.CATEGORIES[cat_key][0]
                 c1, c2, c3 = st.columns([5, 2, 1])
                 with c1:
-                    st.markdown(f"`{label}` · **{path.name}**")
+                    _md(f"`{label}` · **{path.name}**")
                     st.caption(f"{path.stat().st_size // 1024} KB")
                 with c2:
                     st.download_button(
@@ -1913,11 +1920,11 @@ def main():
         if not week_list:
             st.caption("아직 이번 주 목록이 비어 있습니다. PPT를 올려 「순서에 추가」하세요.")
         else:
-            st.markdown(f"**이번 주 재생 순서** · {len(week_list)}개")
+            _md(f"**이번 주 재생 순서** · {len(week_list)}개")
             for path in week_list:
                 c1, c2, c3, c4, c5 = st.columns([5, 1, 1, 1, 1])
                 with c1:
-                    st.markdown(f"**{ppt_library.this_week_label(path)}**")
+                    _md(f"**{ppt_library.this_week_label(path)}**")
                     st.caption(f"{path.stat().st_size // 1024} KB")
                 with c2:
                     if st.button("↑", use_container_width=True, key=f"ppt_week_up_{path.name}"):
